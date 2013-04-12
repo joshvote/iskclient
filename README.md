@@ -1,2 +1,1 @@
-iskclient
-=========
+This is a quick and dirty client for Image Seek
