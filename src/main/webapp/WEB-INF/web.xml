@@ -7,7 +7,7 @@
                         http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
     version="2.4">
 
-   <display-name>Image Seek Client</display-name>    
+   <display-name>Image Seek Client</display-name>
 
    <listener>
       <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -45,7 +45,7 @@
    </servlet-mapping>
 
    <welcome-file-list>
-      <welcome-file>index.jsp</welcome-file>
+      <welcome-file>index.htm</welcome-file>
    </welcome-file-list>
 
 </web-app>
