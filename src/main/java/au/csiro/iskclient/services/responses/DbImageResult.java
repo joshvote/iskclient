@@ -6,14 +6,15 @@ public class DbImageResult {
     }
 
     private Double score;
+    private int databaseId;
+    private int id;
 
-    public DbImageResult(Integer id, Double r) {
+    public DbImageResult(Integer databaseId, Integer id, Double r) {
         super();
         this.id = id;
+        this.databaseId = databaseId;
         this.setScore(r);
     }
-
-    private int id;
 
     public int getId() {
         return id;
@@ -31,4 +32,14 @@ public class DbImageResult {
     public void setScore(Double r) {
         this.score = r;
     }
+
+    public int getDatabaseId() {
+        return databaseId;
+    }
+
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
+    }
+
+
 }

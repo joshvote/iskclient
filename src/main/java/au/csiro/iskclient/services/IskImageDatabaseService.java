@@ -25,11 +25,14 @@ import au.com.bytecode.opencsv.CSVReader;
 public class IskImageDatabaseService {
     private final Log log = LogFactory.getLog(getClass());
 
-    private Map<Integer, String> imageIds;
+    /**
+     * Doubly keyed map, Database Id -> Image Id -> Filepath
+     */
+    private Map<Integer, Map<Integer, String>> filePathMap;
     private Random r;
 
     public IskImageDatabaseService() {
-        imageIds = new HashMap<Integer, String>();
+        filePathMap = new HashMap<Integer, Map<Integer, String>>();
         r = new Random();
 
         InputStream is = null;
@@ -38,8 +41,17 @@ public class IskImageDatabaseService {
             is = getClass().getResourceAsStream("imageid.csv");
             CSVReader reader = new CSVReader(new InputStreamReader(is));
             while ((line = reader.readNext()) != null) {
-                if (!line[0].isEmpty()) {
-                    imageIds.put(Integer.parseInt(line[0]), line[1]);
+                if (!(line.length != 3 || line[0].isEmpty() ||  line[1].isEmpty() || line[2].isEmpty())) {
+                    int databaseId = Integer.parseInt(line[0]);
+                    int imageId = Integer.parseInt(line[1]);
+
+                    Map<Integer, String> imgDbMap = filePathMap.get(databaseId);
+                    if (imgDbMap == null) {
+                        imgDbMap = new HashMap<Integer, String>();
+                        filePathMap.put(databaseId, imgDbMap);
+                    }
+
+                    imgDbMap.put(imageId, line[2]);
                 }
             }
         } catch (Exception ex) {
@@ -48,11 +60,12 @@ public class IskImageDatabaseService {
             IOUtils.closeQuietly(is);
         }
 
-        log.info("Total image ids parsed:" + imageIds.size());
+        log.info("Total image ids parsed:" + filePathMap.size());
     }
 
-    public String getUrlForImageId(int id) {
-        return imageIds.get(id);
+
+    public String getUrlForImageId(int databaseId, int imageId) {
+        return filePathMap.get(databaseId).get(imageId);
     }
 
     /**
@@ -60,11 +73,15 @@ public class IskImageDatabaseService {
      * @param count
      * @return
      */
-    public synchronized int[] getRandomImages(int count) {
-        Set<Integer> keys = imageIds.keySet();
+    public synchronized int[] getRandomImages(int databaseId, int count) {
+        Map<Integer, String> imgDbMap = filePathMap.get(databaseId);
+        if (imgDbMap == null) {
+            return new int[0];
+        }
+
+        Set<Integer> keys = imgDbMap.keySet();
         Integer[] keysArray = keys.toArray(new Integer[keys.size()]);
         int[] result = new int[count];
-
         for (int i = 0; i < result.length; i++) {
             int index = r.nextInt(keysArray.length);
             result[i] = keysArray[index];

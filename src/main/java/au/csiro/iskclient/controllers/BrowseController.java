@@ -70,45 +70,47 @@ public class BrowseController {
         return new ModelAndView(view, model);
     }
 
-    private String imageIdToUrl(int imageId) {
-        String relativeUrl = this.imgDbService.getUrlForImageId(imageId);
+    private String imageIdToUrl(int dbId, int imageId) {
+        String relativeUrl = this.imgDbService.getUrlForImageId(dbId, imageId);
         return String.format(this.remoteImageLibraryPattern, relativeUrl);
     }
 
     @RequestMapping("getRandomImages.do")
-    public ModelAndView getRandomImages(@RequestParam(value="count", required=false, defaultValue="25")Integer count) {
+    public ModelAndView getRandomImages(
+            @RequestParam(value="dbId", required=true)Integer dbId,
+            @RequestParam(value="count", required=false, defaultValue="25")Integer count) {
 
-
-        int[] imgIds = imgDbService.getRandomImages(count);
+        int[] imgIds = imgDbService.getRandomImages(dbId, count);
         List<Image> images = new ArrayList<Image>();
 
         for (int i = 0; i < imgIds.length; i++) {
-            images.add(new Image(imgIds[i], imageIdToUrl(imgIds[i]), 0.0));
+            images.add(new Image(dbId, imgIds[i], imageIdToUrl(dbId, imgIds[i]), 0.0));
         }
 
         return generateJsonResponse(true, images, "");
     }
 
     @RequestMapping("getSimilarImages.do")
-    public ModelAndView getSimilarImages(@RequestParam(value="imageId", required=false) Integer imageId,
+    public ModelAndView getSimilarImages(@RequestParam(value="dbId", required=true)Integer dbId,
+            @RequestParam(value="imageId", required=false) Integer imageId,
             @RequestParam(value="count", required=false, defaultValue="25") Integer count) {
 
 
         if (imageId == null) {
-            return getRandomImages(count);
+            return getRandomImages(dbId, count);
         }
 
         List<DbImageResult> response = null;
         List<Image> parsedImages = new ArrayList<Image>();
         try {
-            response = clientService.queryImgID(imageId, count, false);
+            response = clientService.queryImgID(dbId, imageId, count, false);
         } catch (ServiceException e) {
             log.error("Problem querying for similar images", e);
             return generateJsonResponse(false, null, e.getMessage());
         }
 
         for (DbImageResult dbImg : response) {
-            parsedImages.add(new Image(dbImg.getId(), imageIdToUrl(dbImg.getId()), dbImg.getScore()));
+            parsedImages.add(new Image(dbId, dbImg.getId(), imageIdToUrl(dbId, dbImg.getId()), dbImg.getScore()));
         }
 
         return generateJsonResponse(true, parsedImages, "");

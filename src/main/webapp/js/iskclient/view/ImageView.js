@@ -13,7 +13,7 @@ Ext.define('iskclient.view.ImageView', {
             '<div class="thumb">',
             (!Ext.isIE6 ? '<img src="{url}" />'
                     : '<div style="width:76px;height:76px;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src=\'{url}\')"></div>'),
-            '</div>', '<span>Rating: {rating}</span>', '</div>', '</tpl>' ],
+            '</div>', '<span cls="rating">Rating: {rating}</span>', '</div>', '</tpl>' ],
     itemSelector : 'div.thumb-wrap',
     multiSelect : true,
     singleSelect : false,

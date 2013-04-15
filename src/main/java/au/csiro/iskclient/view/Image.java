@@ -6,13 +6,27 @@ public class Image implements Serializable {
     private String url;
     private Double rating;
     private Integer id;
+    private Integer dbId;
 
 
-    public Image(Integer id, String url, Double rating) {
+    public Image(Integer dbId, Integer id, String url, Double rating) {
         super();
+        this.dbId = dbId;
         this.id = id;
         this.url = url;
         this.rating = rating;
+    }
+
+
+
+    public Integer getDbId() {
+        return dbId;
+    }
+
+
+
+    public void setDbId(Integer dbId) {
+        this.dbId = dbId;
     }
 
 

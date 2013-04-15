@@ -5,13 +5,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import au.csiro.iskclient.services.responses.DbImageResult;
@@ -40,11 +38,11 @@ public class IskClientService {
      * @see http://www.imgseek.net/isk-daemon/documents-1/api-reference#queryImgID
      * @return
      */
-    public List<DbImageResult> queryImgID(int id, int numres, boolean fast) throws ServiceException {
+    public List<DbImageResult> queryImgID(int databaseId, int id, int numres, boolean fast) throws ServiceException {
         List<DbImageResult> parsedImages = new ArrayList<DbImageResult>();
 
         //Make request
-        Object[] params = new Object[] {1, id, numres, fast};
+        Object[] params = new Object[] {databaseId, id, numres, fast};
         Object[] response = null;
         try {
             response = (Object[]) client.execute("queryImgID", params);
@@ -56,7 +54,7 @@ public class IskClientService {
         for (Object res : response) {
             Object[] r = (Object[]) res;
             int rid = (Integer) r[0];
-            parsedImages.add(new DbImageResult(rid, (Double) r[1]));
+            parsedImages.add(new DbImageResult(databaseId, rid, (Double) r[1]));
         }
 
         return parsedImages;
