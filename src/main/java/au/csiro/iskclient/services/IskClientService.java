@@ -21,8 +21,7 @@ public class IskClientService {
 
     public IskClientService() throws MalformedURLException {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        //config.setServerURL(new URL("http://127.0.0.1:31128/RPC"));
-        config.setServerURL(new URL("http://115.146.86.158/RPC"));
+        config.setServerURL(new URL("http://127.0.0.1:31128/RPC"));
         //config.setEnabledForExtensions(true);
 
         client = new XmlRpcClient();

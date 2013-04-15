@@ -33,7 +33,7 @@ public class BrowseController {
             IskImageDatabaseService imgDbService) {
         this.clientService = clientService;
         this.imgDbService = imgDbService;
-        this.remoteImageLibraryPattern = "http://115.146.86.158/img/%1$s"; //This is a hacky way of pointing to a place where our images can be looked up...
+        this.remoteImageLibraryPattern = "http://your.server.here/img/%1$s"; //This is a hacky way of pointing to a place where our images can be looked up...
     }
 
     /**
